@@ -1,0 +1,125 @@
+.counter {
+    //使得页面刚好为浏览器窗口大小
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #53297a;
+    // color: #000000; // 不设置字体颜色会使用默认字体颜色
+    background-color: #F7F7F7;
+
+
+    .mainPage {
+        position: absolute;
+        width: 80vw;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        // justify-content: space-between;
+        align-items: center;
+        background-color: #FFFFFF;
+        // box-shadow: 0px 0px 15px 10px #d0cccc;
+
+        >div {
+            width: 100%;
+            border: 1px solid #858DB2;
+        }
+
+        .navBar {
+            height: 10vh;
+            color: #858DB2;
+            display: flex;
+            // justify-content: space-between;
+            align-items: center;
+
+            >div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 5vh;
+                // margin-left: 10vw;
+                width: 20vw;
+            }
+
+            .dateBar {
+                // margin-left: 8vw;
+            }
+
+            .todoId {
+                width: 10vw;
+            }
+
+            .descriptionBar {
+                width: 35vw;
+            }
+
+            .operationBar {
+                width: 15vw;
+                // margin-left: 15vw;
+                // margin-right: 8vw;
+            }
+        }
+
+        .content {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+
+            >div {
+                display: flex;
+                align-items: center;
+                height: 10vh;
+                border-bottom: 1px solid #858DB2;
+
+                // padding-left: 8vw;
+                // padding-right: 8vw;
+                >div {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    // height: 5vh;
+                    // margin-left: 10vw;
+                }
+            }
+
+
+        }
+
+        .bottomBar {
+            height: 10vh;
+            color: #858DB2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 70vh;
+
+            >div {
+
+                // height: 5vh;
+                width: 20vw;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .pagination {}
+
+            .search {
+                width: 40vw;
+            }
+
+            .add {
+                width: 10vw;
+            }
+
+            .delete {
+                width: 10vw;
+            }
+        }
+    }
+}
