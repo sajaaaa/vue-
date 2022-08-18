@@ -47,7 +47,24 @@
             }
 
             .dateBar {
+
                 // margin-left: 8vw;
+                .dateIcons {
+                    height: 10vh;
+                    // height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    .dateIconUp {
+                        height: 8px;
+                    }
+
+                    .dateIconDown {
+                        height: 8px;
+                        margin-bottom: 0.8vh;
+                    }
+                }
             }
 
             .todoId {
@@ -82,6 +99,7 @@
                 // padding-right: 8vw;
                 >div {
 
+                    // 输入框聚焦时显示下边框
                     :focus {
                         border-bottom: 1px solid #858DB2;
                     }

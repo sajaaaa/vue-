@@ -4,9 +4,9 @@
             <div class="navBar">
                 <div class="dateBar">
                     Date
-                    <div class="dateIcon">
-                        <Icon type="md-arrow-dropup" />
-                        <Icon type="md-arrow-dropdown" />
+                    <div class="dateIcons">
+                        <Icon class="dateIconUp" type="md-arrow-dropup" @click="dateSort('up')" />
+                        <Icon class="dateIconDown" type="md-arrow-dropdown" @click="dateSort('down')" />
                     </div>
                 </div>
                 <div class="todoId">#id</div>
@@ -15,9 +15,11 @@
             </div>
             <div class="content">
                 <div :class="'content' + content.id" v-for="(content) in contents" :key="content.id">
-                    <Input :class="'content' + content.id + 'date'" :border="false" @on-focus="onFocus"
-                        :style="{ 'width': '20vw', 'text -align': 'center' }" v-model="content.date">
-                    </Input>
+                    <DatePicker :class="'content' + content.id + 'date'" :border="false" @on-focus="onFocus"
+                        :style="{ 'width': '20vw', 'text -align': 'center' }" v-model="content.date"
+                        placeholder="请选择截止日期">
+                    </DatePicker>
+                    <!-- <DatePicker type="date" placeholder="Select date" style="width: 200px" /> -->
                     <div :class="'content' + content.id + 'id'" :style="{ 'width': '10vw' }">
                         {{ content.id }}
                     </div>
@@ -45,7 +47,7 @@
 import { getCurrentInstance, onMounted } from '@vue/runtime-core'
 import { toRaw } from '@vue/reactivity';
 import { reactive, ref } from 'vue';
-import { Button, Input, Icon } from 'view-ui-plus';
+import { Button, Input, Icon, DatePicker } from 'view-ui-plus';
 let currentInstance = '';
 onMounted(() => {
     currentInstance = getCurrentInstance();
@@ -112,6 +114,17 @@ const deleteTodo = () => {
     contents.splice(newIndex, 1); // 删除最后的一个数据
     console.log(contents);
     // onFocus(newIndex);
+}
+const dateSort = (type) => {
+    console.log(type);
+    if (type === "up") {
+        contents.sort((a, b) => a.date.localeCompare(b.date));
+        console.log(contents);
+    }
+    else if (type === "down") {
+        contents.sort((a, b) => b.date.localeCompare(a.date));
+        console.log(contents);
+    }
 }
 </script>
 
