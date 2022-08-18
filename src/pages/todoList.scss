@@ -13,6 +13,7 @@
     background-color: #F7F7F7;
 
 
+
     .mainPage {
         position: absolute;
         width: 80vw;
@@ -75,17 +76,34 @@
                 height: 10vh;
                 border-bottom: 1px solid #858DB2;
 
+
+
                 // padding-left: 8vw;
                 // padding-right: 8vw;
                 >div {
+
+                    :focus {
+                        border-bottom: 1px solid #858DB2;
+                    }
+
+                    // :valid {
+                    //     border: none;
+                    // }
+
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    // height: 5vh;
-                    // margin-left: 10vw;
+
+                    // 控制ui组件默认样式，则引入时 css不能用 scope
+                    .ivu-input {
+                        text-align: center !important;
+                    }
                 }
             }
 
+            .content6 {
+                border-bottom: none
+            }
 
         }
 
@@ -110,15 +128,18 @@
             .pagination {}
 
             .search {
-                width: 40vw;
+                width: 35vw;
+                margin-right: 5vw;
             }
 
             .add {
-                width: 10vw;
+                width: 8vw;
+                margin-right: 2vw;
             }
 
             .delete {
-                width: 10vw;
+                width: 8vw;
+                margin-right: 2vw;
             }
         }
     }

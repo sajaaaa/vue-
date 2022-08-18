@@ -11,7 +11,10 @@
     "vue": "^3.2.37"
   },
   "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.18.10",
     "@vitejs/plugin-vue": "^3.0.1",
+    "babel-plugin-import": "^1.13.5",
     "sass": "^1.54.4",
     "vite": "^3.0.4"
   }
