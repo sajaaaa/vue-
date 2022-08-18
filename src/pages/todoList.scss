@@ -143,7 +143,10 @@
                 align-items: center;
             }
 
-            .pagination {}
+            .pagination {
+                width: 20vw;
+                box-sizing: border-box;
+            }
 
             .search {
                 width: 35vw;
