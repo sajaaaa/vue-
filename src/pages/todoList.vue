@@ -31,13 +31,15 @@
                     </Input>
                     <div :class="'content' + (index + 1) + 'operation'"
                         :style="{ 'width': '15vw', 'text-align': 'center' }">
-                        <Checkbox v-model="content.checked" @on-change="chooseId((index + 1))" label="">
+                        <!-- <Checkbox v-model="content.checked" @on-change="chooseId((index + 1))" label=""> -->
+                        <Checkbox v-model="content.checked" label="">
                         </Checkbox>
                     </div>
                 </div>
             </div>
             <div class="bottomBar">
-                <Page class="pagination" size="small" simple :total="pageAmount" :page-size="6" @on-change="changePage">
+                <Page class="pagination" size="small" simple :total="pageAmount" :page-size="6"
+                    :model-value="pageCurrnet" @on-change="changePage">
                     Pagination
                 </Page>
                 <Input class="search" placeholder="Search">
@@ -53,7 +55,7 @@
 <script setup>
 import { getCurrentInstance, onMounted } from '@vue/runtime-core'
 import { toRaw } from '@vue/reactivity';
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { Button, Input, Icon, DatePicker, Page, Checkbox } from 'view-ui-plus';
 let currentInstance = '';
 onMounted(() => {
@@ -64,9 +66,9 @@ onMounted(() => {
     // console.log(JSON.parse(JSON.stringify(currentInstance.ctx.$refs)));
 
 })
-const pageAmount = ref(0);
-const pageCurrnet = ref(1);
-const newAddId = ref(0);
+const pageAmount = ref(0); //数据总数
+const pageCurrnet = ref(1); // 当前所在页码
+const newAddId = ref(0); // 新增事项时ID
 //测试样例
 const contents = reactive(
     [
@@ -162,6 +164,7 @@ const dateChange = (time, id) => {
 // 点击按钮新增数据，此处异步，为了让数组更新后才聚集新输入框
 const addTodo = async () => {
     const newIndex = contents.length;
+    changePage(parseInt(newIndex / 6) + 1);
     // console.log(newIndex);
     const todayDate = formatDate(new Date());
     // console.log(todayDate);
@@ -200,11 +203,18 @@ const changePage = (current) => {
     // console.log("当前页码为", current);
     pageCurrnet.value = current;
 }
-
-// 选择删除项，没用函数
-const chooseId = (id) => {
-    console.log("选中删除", id);
-}
+// 页面页数监听
+watch(
+    () => contents.length,
+    (length, prevLength) => {
+        // console.log(length, prevLength);
+        pageAmount.value = length;
+    }
+)
+// 选择删除项，已废弃
+// const chooseId = (id) => {
+//     console.log("选中删除", id);
+// }
 </script>
 
 <style  lang="scss" >
