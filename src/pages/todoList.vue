@@ -19,7 +19,7 @@
                     :key="(index + 1)">
                     <DatePicker :class="'content' + (index + 1) + 'date'" :border="false" @on-focus="onFocus"
                         :style="{ 'width': '20vw', 'text -align': 'center' }" :model-value="content.date"
-                        placeholder="请选择截止日期">
+                        placeholder="请选择截止日期" @on-change="(time) => { dateChange(time, content.id) }">
                     </DatePicker>
                     <!-- <DatePicker type="date" placeholder="Select date" style="width: 200px" /> -->
                     <div :class="'content' + (index + 1) + 'id'" :style="{ 'width': '10vw' }">
@@ -149,6 +149,15 @@ const formatDate = (date) => {
         day = `0${day}`
     }
     return (`${year}-${month}-${day}`)
+}
+//日期选择函数
+const dateChange = (time, id) => {
+    // console.log(time);
+    contents.forEach((item, index) => {
+        if (item.id === id) {
+            contents[index].date = time;
+        }
+    })
 }
 // 点击按钮新增数据，此处异步，为了让数组更新后才聚集新输入框
 const addTodo = async () => {
