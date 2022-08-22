@@ -3,15 +3,15 @@
         <div class="mainPage">
             <div class="navBar">
                 <div class="dateBar">
-                    Date
+                    待办截止日期
                     <div class="dateIcons">
                         <Icon class="dateIconUp" type="md-arrow-dropup" @click="dateSort('up')" />
                         <Icon class="dateIconDown" type="md-arrow-dropdown" @click="dateSort('down')" />
                     </div>
                 </div>
-                <div class="todoId">#id</div>
-                <div class="descriptionBar">description</div>
-                <div class="operationBar">operation</div>
+                <div class="todoId">待办序号</div>
+                <div class="descriptionBar">待办描述</div>
+                <div class="operationBar">待办删除</div>
             </div>
             <div class="content">
                 <div :class="'content' + (index + 1)"
@@ -29,16 +29,21 @@
                         :style="{ 'width': '35vw', 'text-align': 'center' }" :border="false"
                         v-model="content.description">
                     </Input>
+                    <div :class="'content' + (index + 1) + 'operation'"
+                        :style="{ 'width': '15vw', 'text-align': 'center' }">
+                        <Checkbox v-model="content.checked" @on-change="chooseId((index + 1))" label="">
+                        </Checkbox>
+                    </div>
                 </div>
             </div>
             <div class="bottomBar">
-                <Page class="pagination" size="small" simple :total="100" :page-size="6" @on-change="changePage">
+                <Page class="pagination" size="small" simple :total="pageAmount" :page-size="6" @on-change="changePage">
                     Pagination
                 </Page>
                 <Input class="search" placeholder="Search">
                 </Input>
-                <Button class="add" @click="addTodo">Add+</Button>
-                <Button class="delete" @click="deleteTodo">Delete-</Button>
+                <Button class="add" @click="addTodo">新建+</Button>
+                <Button class="delete" @click="deleteTodo">删除-</Button>
             </div>
         </div>
     </div>
@@ -49,16 +54,19 @@
 import { getCurrentInstance, onMounted } from '@vue/runtime-core'
 import { toRaw } from '@vue/reactivity';
 import { reactive, ref } from 'vue';
-import { Button, Input, Icon, DatePicker, Page } from 'view-ui-plus';
+import { Button, Input, Icon, DatePicker, Page, Checkbox } from 'view-ui-plus';
 let currentInstance = '';
 onMounted(() => {
     currentInstance = getCurrentInstance();
+    pageAmount.value = contents.length;
+    newAddId.value = contents.length;
     // console.log(toRaw(currentInstance.ctx.$refs));
     // console.log(JSON.parse(JSON.stringify(currentInstance.ctx.$refs)));
 
 })
-const pageAmount = ref(10);
+const pageAmount = ref(0);
 const pageCurrnet = ref(1);
+const newAddId = ref(0);
 //测试样例
 const contents = reactive(
     [
@@ -66,41 +74,55 @@ const contents = reactive(
             date: "2020-8-14",
             id: 1,
             description: "完成todoList1",
+            checked: false,
         },
         {
             date: "2020-8-15",
             id: 2,
             description: "完成todoList2",
+            checked: false,
+
         },
         {
             date: "2020-8-15",
             id: 3,
             description: "完成todoList3",
+            checked: false,
+
         },
         {
             date: "2020-8-15",
             id: 4,
             description: "完成todoList4",
+            checked: false,
+
         },
         {
             date: "2020-8-15",
             id: 5,
             description: "完成todoList5",
+            checked: false,
         },
         {
             date: "2020-8-15",
             id: 6,
             description: "完成todoList6",
+            checked: false,
+
         },
         {
             date: "2021-8-17",
             id: 7,
             description: "完成todoList7",
+            checked: false,
+
         },
         {
             date: "2022-9-15",
             id: 8,
             description: "完成todoList8",
+            checked: false,
+
         },
     ]
 );
@@ -134,17 +156,23 @@ const addTodo = async () => {
     // console.log(newIndex);
     const todayDate = formatDate(new Date());
     // console.log(todayDate);
-    await contents.splice(newIndex, 0, { date: todayDate, id: newIndex + 1, description: "", });
+    await contents.splice(newIndex, 0, { date: todayDate, id: newAddId.value + 1, description: "", checked: false, });
     // console.log(contents);
-    onFocus((newIndex + 1) % 6);
+    newAddId.value = newAddId.value + 1;
+    onFocus((newIndex + 1) % 6 ? (newIndex + 1) % 6 : 6);
 }
 // 点击按钮删除数据
 const deleteTodo = () => {
-    const newIndex = contents.length - 1;
-    contents.splice(newIndex, 1); // 删除最后的一个数据
-    // console.log(contents);
-    // onFocus(newIndex);
+    contents.splice(0, contents.length, ...contents.filter((item, index) => {
+        // console.log(item, index);
+        if (item.checked === false) {
+            // contents.splice(index, 1);
+            return true;
+        }
+    }))
+
 }
+// 日期排序函数
 const dateSort = (type) => {
     // console.log(type);
     // console.log(contents);
@@ -158,9 +186,15 @@ const dateSort = (type) => {
         // console.log(toRaw(contents));
     }
 }
+// 页面跳转函数
 const changePage = (current) => {
     // console.log("当前页码为", current);
     pageCurrnet.value = current;
+}
+
+// 选择删除项，没用函数
+const chooseId = (id) => {
+    console.log("选中删除", id);
 }
 </script>
 
