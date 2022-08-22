@@ -13,7 +13,32 @@
                 <div class="descriptionBar">待办描述</div>
                 <div class="operationBar">待办删除</div>
             </div>
-            <div class="content">
+            <!-- 展示搜索项 -->
+            <div v-if="isSearching" class="content">
+                <div :class="'content' + (index + 1)"
+                    v-for="(content, index) in searchContents.slice(6 * (pageCurrnet - 1), 6 * pageCurrnet)"
+                    :key="(index + 1)">
+                    <DatePicker :class="'content' + (index + 1) + 'date'" :border="false" @on-focus="onFocus"
+                        :style="{ 'width': '20vw', 'text -align': 'center' }" :model-value="content.date"
+                        placeholder="请选择截止日期" @on-change="(time) => { dateChange(time, content.id) }">
+                    </DatePicker>
+                    <!-- <DatePicker type="date" placeholder="Select date" style="width: 200px" /> -->
+                    <div :class="'content' + (index + 1) + 'id'" :style="{ 'width': '10vw' }">
+                        {{ content.id }}
+                    </div>
+                    <Input :class="'content' + (index + 1) + 'description'" :ref="'descriptionInput' + (index + 1)"
+                        :style="{ 'width': '35vw', 'text-align': 'center' }" :border="false"
+                        v-model="content.description">
+                    </Input>
+                    <div :class="'content' + (index + 1) + 'operation'"
+                        :style="{ 'width': '15vw', 'text-align': 'center' }">
+                        <!-- <Checkbox v-model="content.checked" @on-change="chooseId((index + 1))" label=""> -->
+                        <Checkbox v-model="content.checked" label="">
+                        </Checkbox>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="content">
                 <div :class="'content' + (index + 1)"
                     v-for="(content, index) in contents.slice(6 * (pageCurrnet - 1), 6 * pageCurrnet)"
                     :key="(index + 1)">
@@ -37,14 +62,18 @@
                     </div>
                 </div>
             </div>
+
             <div class="bottomBar">
                 <Page class="pagination" size="small" simple :total="pageAmount" :page-size="6"
                     :model-value="pageCurrnet" @on-change="changePage">
                     Pagination
                 </Page>
-                <Input class="search" placeholder="Search">
+                <Input search class="search" placeholder="Search" @on-search="value => { onSearch(value) }">
+                <!-- <template #suffix>
+                    <Icon type="ios-search" />
+                </template> -->
                 </Input>
-                <Button class="add" @click="addTodo">新建+</Button>
+                <Button :disabled="isSearching" class="add" @click="addTodo">新建+</Button>
                 <Button class="delete" @click="deleteTodo">删除-</Button>
             </div>
         </div>
@@ -69,60 +98,63 @@ onMounted(() => {
 const pageAmount = ref(0); //数据总数
 const pageCurrnet = ref(1); // 当前所在页码
 const newAddId = ref(0); // 新增事项时ID
+const searchContents = reactive([]);  // 搜索对应的数据
+const isSearching = ref(false); // 判断是否为搜索状态
+const searchVal = ref(""); // 保存当前搜索数据
 //测试样例
 const contents = reactive(
     [
         {
-            date: "2020-8-14",
+            date: "2022-8-14",
             id: 1,
-            description: "完成todoList1",
+            description: "丹丹宝宝",
             checked: false,
         },
         {
-            date: "2020-8-15",
+            date: "2022-8-15",
             id: 2,
-            description: "完成todoList2",
+            description: "杰杰宝贝",
             checked: false,
 
         },
         {
-            date: "2020-8-15",
+            date: "2022-8-15",
             id: 3,
-            description: "完成todoList3",
+            description: "亲亲",
             checked: false,
 
         },
         {
-            date: "2020-8-15",
+            date: "2022-8-15",
             id: 4,
-            description: "完成todoList4",
+            description: "抱抱",
             checked: false,
 
         },
         {
             date: "2020-8-15",
             id: 5,
-            description: "完成todoList5",
+            description: "亲亲抱抱",
             checked: false,
         },
         {
             date: "2020-8-15",
             id: 6,
-            description: "完成todoList6",
+            description: "湖南文理学院",
             checked: false,
 
         },
         {
             date: "2021-8-17",
             id: 7,
-            description: "完成todoList7",
+            description: "杰宝大帅哥",
             checked: false,
 
         },
         {
             date: "2022-9-15",
             id: 8,
-            description: "完成todoList8",
+            description: "摸摸猪头",
             checked: false,
 
         },
@@ -132,8 +164,8 @@ const contents = reactive(
 // 新增数据时，聚焦到新的输入框
 const onFocus = (number) => {
     const descriptionInputNumber = `descriptionInput${number}`;
-    console.log(descriptionInputNumber);
-    console.log(toRaw(currentInstance.ctx.$refs)[descriptionInputNumber][0]);
+    // console.log(descriptionInputNumber);
+    // console.log(toRaw(currentInstance.ctx.$refs)[descriptionInputNumber][0]);
     toRaw(currentInstance.ctx.$refs)[descriptionInputNumber][0]?.focus({
         cursor: 'end'
     });
@@ -182,7 +214,6 @@ const deleteTodo = () => {
             return true;
         }
     }))
-
 }
 // 日期排序函数
 const dateSort = (type) => {
@@ -203,12 +234,35 @@ const changePage = (current) => {
     // console.log("当前页码为", current);
     pageCurrnet.value = current;
 }
+// 页面搜索函数
+const onSearch = (val) => {
+    console.log("搜索项：", val);
+    searchVal.value = val;
+    val ? isSearching.value = true : isSearching.value = false; // 判断是否为搜索状态
+    searchContents.splice(0, searchContents.length, ...contents.filter((item, index) => {
+        // console.log(item, index);
+        if (item.description.indexOf(val) !== -1) {
+            return true;
+        }
+    }))
+    // console.log(searchContents);
+}
+
 // 页面页数监听
 watch(
-    () => contents.length,
-    (length, prevLength) => {
+    [() => contents.length, () => searchContents.length],
+    ([length, searchlength], [prevLength, prevSearchlength]) => {
         // console.log(length, prevLength);
-        pageAmount.value = length;
+        // console.log(searchlength, prevSearchlength);
+        isSearching.value === true ? pageAmount.value = searchlength : pageAmount.value = length;
+    }
+)
+//页面搜索监听(页面原数据更新时，搜索数据同步更新)
+watch(
+    contents, (contents, prevContents) => {
+        if (isSearching.value === true) {
+            onSearch(searchVal.value);
+        }
     }
 )
 // 选择删除项，已废弃
